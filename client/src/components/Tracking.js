@@ -1,40 +1,3 @@
-// import React, { useState, useEffect } from 'react';
-// import axios from 'axios';
-
-// function Tracking() {
-//   const [bookingId, setBookingId] = useState('');
-//   const [trackingInfo, setTrackingInfo] = useState(null);
-
-//   const handleTrack = async () => {
-//     try {
-//       const response = await axios.get(`http://localhost:5000/api/bookings/${bookingId}`);
-//       setTrackingInfo(response.data);
-//     } catch (error) {
-//       alert('Error fetching tracking information');
-//     }
-//   };
-
-//   return (
-//     <div>
-//       <h2>Track Your Booking</h2>
-//       <input
-//         type="text"
-//         placeholder="Enter Booking ID"
-//         value={bookingId}
-//         onChange={(e) => setBookingId(e.target.value)}
-//       />
-//       <button onClick={handleTrack}>Track</button>
-//       {trackingInfo && (
-//         <div>
-//           <p>Status: {trackingInfo.status}</p>
-//           <p>Driver Location: {trackingInfo.driverLocation}</p>
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
-
-// export default Tracking;
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import io from 'socket.io-client';
@@ -57,7 +20,10 @@ function Tracking() {
 
   const handleTrack = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/bookings/${bookingId}`);
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`http://localhost:5000/api/bookings/${bookingId}`, {
+        headers: { 'x-auth-token': token }
+      });
       setTrackingInfo(response.data);
     } catch (error) {
       alert('Error fetching tracking information');
@@ -77,7 +43,9 @@ function Tracking() {
       {trackingInfo && (
         <div>
           <p>Status: {trackingInfo.status}</p>
-          <p>Driver Location: {trackingInfo.driverLocation}</p>
+          <p>Pickup: {trackingInfo.pickup}</p>
+          <p>Dropoff: {trackingInfo.dropoff}</p>
+          <p>Vehicle Type: {trackingInfo.vehicle_type}</p>
         </div>
       )}
     </div>

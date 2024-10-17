@@ -7,6 +7,7 @@ function PriceEstimation() {
     vehicleType: '',
   });
   const [price, setPrice] = useState(null);
+  const [error, setError] = useState(null);
 
   const handleChange = (e) => {
     setEstimate({ ...estimate, [e.target.name]: e.target.value });
@@ -14,11 +15,13 @@ function PriceEstimation() {
 
   const handleEstimate = async (e) => {
     e.preventDefault();
+    setError(null);
     try {
-      const response = await axios.post('http://localhost:5000/price-estimate', estimate);
+      const response = await axios.post('http://localhost:5000/api/bookings/price-estimate', estimate);
       setPrice(response.data.price);
     } catch (error) {
-      alert('Error estimating price');
+      setError('Error estimating price. Please try again.');
+      console.error('Error:', error);
     }
   };
 
@@ -48,6 +51,7 @@ function PriceEstimation() {
         <button type="submit">Estimate Price</button>
       </form>
       {price && <p>Estimated Price: ${price}</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
 }

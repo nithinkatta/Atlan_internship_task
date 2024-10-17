@@ -6,6 +6,7 @@ import Booking from './components/Booking';
 import Tracking from './components/Tracking';
 import PriceEstimation from './components/PriceEstimation';
 import Driver from './components/Driver';
+import './styles/global.css';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -15,8 +16,6 @@ function App() {
     const token = localStorage.getItem('token');
     if (token) {
       setIsAuthenticated(true);
-      // You might want to verify the token here and set the user type
-      // For now, we'll just assume it's a regular user
       setUserType('user');
     }
   }, []);
@@ -45,59 +44,64 @@ function App() {
                 <li><Link to="/tracking">Track Your Ride</Link></li>
                 <li><Link to="/price-estimation">Price Estimation</Link></li>
                 {userType === 'driver' && <li><Link to="/driver">Driver Dashboard</Link></li>}
-                <li><button onClick={handleLogout}>Logout</button></li>
+                <li><button className="btn" onClick={handleLogout}>Logout</button></li>
               </>
             )}
           </ul>
         </nav>
 
-        <Routes>
-          <Route path="/register" element={<Register />} />
-          <Route 
-            path="/login" 
-            element={
-              <Login 
-                setIsAuthenticated={setIsAuthenticated} 
-                setUserType={setUserType} 
-              />
-            } 
-          />
-          <Route
-            path="/booking"
-            element={
-              <PrivateRoute isAuthenticated={isAuthenticated}>
-                <Booking />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/tracking"
-            element={
-              <PrivateRoute isAuthenticated={isAuthenticated}>
-                <Tracking />
-              </PrivateRoute>
-            }
-          />
-          <Route path="/price-estimation" element={<PriceEstimation />} />
-          <Route
-            path="/driver"
-            element={
-              <PrivateRoute isAuthenticated={isAuthenticated} userType={userType}>
-                <Driver />
-              </PrivateRoute>
-            }
-          />
-          <Route 
-            path="/" 
-            element={
-              isAuthenticated ? (
-                <h1>Welcome to the Logistics Platform</h1>
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            } 
-          />
-        </Routes>
+        <div className="container">
+          <Routes>
+            <Route path="/register" element={<Register />} />
+            <Route 
+              path="/login" 
+              element={
+                <Login 
+                  setIsAuthenticated={setIsAuthenticated} 
+                  setUserType={setUserType} 
+                />
+              } 
+            />
+            <Route
+              path="/booking"
+              element={
+                <PrivateRoute isAuthenticated={isAuthenticated}>
+                  <Booking />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/tracking"
+              element={
+                <PrivateRoute isAuthenticated={isAuthenticated}>
+                  <Tracking />
+                </PrivateRoute>
+              }
+            />
+            <Route path="/price-estimation" element={<PriceEstimation />} />
+            <Route
+              path="/driver"
+              element={
+                <PrivateRoute isAuthenticated={isAuthenticated} userType={userType}>
+                  <Driver />
+                </PrivateRoute>
+              }
+            />
+            <Route 
+              path="/" 
+              element={
+                isAuthenticated ? (
+                  <div className="card">
+                    <h1>Welcome to the Logistics Platform</h1>
+                    <p>Choose an option from the navigation menu to get started.</p>
+                  </div>
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              } 
+            />
+          </Routes>
+        </div>
       </div>
     </Router>
   );

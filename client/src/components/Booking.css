@@ -1,0 +1,77 @@
+.booking-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .booking-form {
+    max-width: 500px;
+  }
+  
+  .estimated-price {
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-top: 10px;
+  }
+  
+  .message {
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  
+  .booked-rides {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+  }
+  
+  .ride-card {
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  .ride-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .cancel-btn {
+    background-color: var(--error-color);
+  }
+  
+  .cancel-btn:hover {
+    background-color: #c0392b;
+  }
+  
+  .ride-details-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .ride-details-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    max-width: 500px;
+    width: 100%;
+  }
+  
+  .map-placeholder {
+    background-color: #f1f1f1;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    border-radius: 5px;
+  }

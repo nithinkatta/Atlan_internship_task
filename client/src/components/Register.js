@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -7,7 +8,8 @@ function Register() {
     email: '',
     password: '',
   });
-  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -16,16 +18,17 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/users/register', formData);
-      setMessage(response.data.message);
+      await axios.post('http://localhost:5000/api/users/register', formData);
+      navigate('/login');
     } catch (error) {
-      setMessage('Error registering user');
+      setError(error.response?.data?.message || 'Error registering user');
     }
   };
 
   return (
     <div>
       <h2>Register</h2>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -53,7 +56,6 @@ function Register() {
         />
         <button type="submit">Register</button>
       </form>
-      {message && <p>{message}</p>}
     </div>
   );
 }

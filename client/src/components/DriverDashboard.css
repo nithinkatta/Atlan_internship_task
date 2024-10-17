@@ -1,0 +1,39 @@
+.driver-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .active-job, .available-jobs, .job-history {
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+  }
+  
+  .job-card {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+  }
+  
+  .status-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .status-buttons button {
+    padding: 5px 10px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  .status-buttons button:hover {
+    background-color: var(--secondary-color);
+  }

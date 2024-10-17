@@ -24,7 +24,6 @@ function Login({ setIsAuthenticated, setUserType }) {
       setIsAuthenticated(true);
       setUserType(response.data.userType);
       
-      // Redirect to the home page or the page user tried to access before login
       const origin = location.state?.from?.pathname || '/';
       navigate(origin);
     } catch (error) {
@@ -33,9 +32,9 @@ function Login({ setIsAuthenticated, setUserType }) {
   };
 
   return (
-    <div>
+    <div className="card">
       <h2>Login</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p className="error">{error}</p>}
       <form onSubmit={handleSubmit}>
         <input
           type="email"
@@ -53,7 +52,7 @@ function Login({ setIsAuthenticated, setUserType }) {
           onChange={handleChange}
           required
         />
-        <button type="submit">Login</button>
+        <button type="submit" className="btn">Login</button>
       </form>
     </div>
   );
