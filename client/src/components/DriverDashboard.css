@@ -1,39 +1,33 @@
 .driver-dashboard {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  .active-job, .available-jobs, .job-history {
-    background-color: white;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-  }
-  
-  .job-card {
-    margin-bottom: 10px;
-    padding: 10px;
-    border: 1px solid #e0e0e0;
-    border-radius: 5px;
-  }
-  
-  .status-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 10px;
-  }
-  
-  .status-buttons button {
-    padding: 5px 10px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-  }
-  
-  .status-buttons button:hover {
-    background-color: var(--secondary-color);
-  }
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.driver-info, .preferences, .bookings {
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.preferences input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.preferences label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.booking-item {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}

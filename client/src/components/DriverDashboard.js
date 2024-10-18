@@ -1,119 +1,126 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import io from 'socket.io-client';
 import './DriverDashboard.css';
 
 function DriverDashboard() {
-  const [activeJob, setActiveJob] = useState(null);
-  const [availableJobs, setAvailableJobs] = useState([]);
-  const [jobHistory, setJobHistory] = useState([]);
+  const [driverInfo, setDriverInfo] = useState(null);
+  const [bookings, setBookings] = useState([]);
+  const [preferences, setPreferences] = useState({
+    is_available: false,
+    preferred_from: '',
+    preferred_to: '',
+    any_location: false
+  });
 
   useEffect(() => {
-    const socket = io('http://localhost:5000');
-    const token = localStorage.getItem('token');
-
-    socket.on('newJob', (job) => {
-      setAvailableJobs(prevJobs => [...prevJobs, job]);
-    });
-
-    fetchAvailableJobs();
-    fetchJobHistory();
-
-    return () => socket.disconnect();
+    fetchDriverInfo();
+    fetchBookings();
   }, []);
 
-  const fetchAvailableJobs = async () => {
+  const fetchDriverInfo = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5000/api/driver/available-jobs', {
+      const response = await axios.get('http://localhost:5000/api/drivers/info', {
         headers: { 'x-auth-token': token }
       });
-      setAvailableJobs(response.data);
+      setDriverInfo(response.data);
+      setPreferences(response.data);
     } catch (error) {
-      console.error('Error fetching available jobs:', error);
+      console.error('Error fetching driver info:', error);
     }
   };
 
-  const fetchJobHistory = async () => {
+  const fetchBookings = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5000/api/driver/job-history', {
+      const response = await axios.get('http://localhost:5000/api/drivers/bookings', {
         headers: { 'x-auth-token': token }
       });
-      setJobHistory(response.data);
+      setBookings(response.data);
     } catch (error) {
-      console.error('Error fetching job history:', error);
+      console.error('Error fetching bookings:', error);
     }
   };
 
-  const acceptJob = async (jobId) => {
-    try {
-      const token = localStorage.getItem('token');
-      await axios.post(`http://localhost:5000/api/driver/accept-job/${jobId}`, {}, {
-        headers: { 'x-auth-token': token }
-      });
-      const acceptedJob = availableJobs.find(job => job.id === jobId);
-      setActiveJob(acceptedJob);
-      setAvailableJobs(prevJobs => prevJobs.filter(job => job.id !== jobId));
-    } catch (error) {
-      console.error('Error accepting job:', error);
-    }
+  const handlePreferenceChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setPreferences(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
   };
 
-  const updateJobStatus = async (status) => {
+  const updatePreferences = async () => {
     try {
       const token = localStorage.getItem('token');
-      await axios.post(`http://localhost:5000/api/driver/update-job-status/${activeJob.id}`, 
-        { status },
-        { headers: { 'x-auth-token': token } }
-      );
-      setActiveJob(prevJob => ({ ...prevJob, status }));
-      if (status === 'completed') {
-        setJobHistory(prevHistory => [activeJob, ...prevHistory]);
-        setActiveJob(null);
-      }
+      await axios.put('http://localhost:5000/api/drivers/preferences', preferences, {
+        headers: { 'x-auth-token': token }
+      });
+      alert('Preferences updated successfully');
+      fetchDriverInfo(); // Refresh driver info after updating preferences
     } catch (error) {
-      console.error('Error updating job status:', error);
+      console.error('Error updating preferences:', error);
+      alert('Error updating preferences');
     }
   };
 
   return (
     <div className="driver-dashboard">
       <h2>Driver Dashboard</h2>
-      
-      {activeJob && (
-        <div className="active-job card">
-          <h3>Active Job</h3>
-          <p><strong>Pickup:</strong> {activeJob.pickup}</p>
-          <p><strong>Dropoff:</strong> {activeJob.dropoff}</p>
-          <p><strong>Status:</strong> {activeJob.status}</p>
-          <div className="status-buttons">
-            <button onClick={() => updateJobStatus('en route to pickup')}>En Route to Pickup</button>
-            <button onClick={() => updateJobStatus('goods collected')}>Goods Collected</button>
-            <button onClick={() => updateJobStatus('en route to dropoff')}>En Route to Dropoff</button>
-            <button onClick={() => updateJobStatus('completed')}>Completed</button>
-          </div>
+      {driverInfo && (
+        <div className="driver-info">
+          <h3>Driver Information</h3>
+          <p>Name: {driverInfo.name}</p>
+          <p>Email: {driverInfo.email}</p>
+          <p>Vehicle Type: {driverInfo.vehicle_type}</p>
+          <p>Status: {preferences.is_available ? 'Available' : 'Not Available'}</p>
         </div>
       )}
-
-      <div className="available-jobs">
-        <h3>Available Jobs</h3>
-        {availableJobs.map(job => (
-          <div key={job.id} className="job-card card">
-            <p><strong>Pickup:</strong> {job.pickup}</p>
-            <p><strong>Dropoff:</strong> {job.dropoff}</p>
-            <button onClick={() => acceptJob(job.id)}>Accept Job</button>
-          </div>
-        ))}
+      <div className="preferences">
+        <h3>Set Preferences</h3>
+        <label>
+          <input
+            type="checkbox"
+            name="is_available"
+            checked={preferences.is_available}
+            onChange={handlePreferenceChange}
+          />
+          Available for bookings
+        </label>
+        <input
+          type="text"
+          name="preferred_from"
+          placeholder="Preferred starting location"
+          value={preferences.preferred_from}
+          onChange={handlePreferenceChange}
+        />
+        <input
+          type="text"
+          name="preferred_to"
+          placeholder="Preferred destination"
+          value={preferences.preferred_to}
+          onChange={handlePreferenceChange}
+        />
+        <label>
+          <input
+            type="checkbox"
+            name="any_location"
+            checked={preferences.any_location}
+            onChange={handlePreferenceChange}
+          />
+          Any location is fine
+        </label>
+        <button onClick={updatePreferences} className="btn">Update Preferences</button>
       </div>
-
-      <div className="job-history">
-        <h3>Job History</h3>
-        {jobHistory.map(job => (
-          <div key={job.id} className="job-card card">
-            <p><strong>Pickup:</strong> {job.pickup}</p>
-            <p><strong>Dropoff:</strong> {job.dropoff}</p>
-            <p><strong>Status:</strong> {job.status}</p>
+      <div className="bookings">
+        <h3>Your Bookings</h3>
+        {bookings.map(booking => (
+          <div key={booking.id} className="booking-item">
+            <p>Booking ID: {booking.id}</p>
+            <p>From: {booking.pickup}</p>
+            <p>To: {booking.dropoff}</p>
+            <p>Status: {booking.status}</p>
+            <p>User: {booking.user_name} (Phone: {booking.user_phone})</p>
           </div>
         ))}
       </div>

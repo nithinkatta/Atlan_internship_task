@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('../config/db');
 const authMiddleware = require('../middleware/auth');
 
-// Create a new booking
+
 router.post('/', authMiddleware, async (req, res) => {
   try {
     const { pickup, dropoff, vehicleType } = req.body;
@@ -37,6 +37,27 @@ router.post('/', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Error creating booking', error: error.message });
   }
 });
+
+router.post('/available-drivers', async (req, res) => {
+  try {
+    const { pickup, dropoff, vehicleType } = req.body;
+    
+    const [availableDrivers] = await db.execute(
+      `SELECT d.id FROM drivers d
+       WHERE d.vehicle_type = ? AND d.is_available = TRUE
+       AND (d.any_location = TRUE 
+            OR (d.preferred_location_from = ? AND d.preferred_location_to = ?))`,
+      [vehicleType, pickup, dropoff]
+    );
+
+    res.json(availableDrivers);
+  } catch (error) {
+    console.error('Error fetching available drivers:', error);
+    res.status(500).json({ message: 'Error fetching available drivers', error: error.message });
+  }
+});
+
+
 
 // Get all bookings for a user
 router.get('/', authMiddleware, async (req, res) => {
