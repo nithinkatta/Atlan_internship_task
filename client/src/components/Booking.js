@@ -299,8 +299,8 @@ function Booking() {
         {message && <p className="message">{message}</p>}
       </div>
 
+      <h3>Your Booked Rides</h3>
       <div className="booked-rides">
-        <h3>Your Booked Rides</h3>
         {bookedRides.map(ride => (
           <div key={ride.id} className="ride-card" onClick={() => setSelectedRide(ride)}>
             <p><strong>From:</strong> {ride.pickup}</p>
