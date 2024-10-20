@@ -6,6 +6,6 @@ A highly scalable logistics platform that allows users to book transportation se
 The platform must be able to handle 10,000 requests per second, with a registered base of 100,000 drivers and 50 million users globally.
 </p>
 <h3>Application demo</h3>
-https://resplendent-tartufo-99517e.netlify.app/login
-user: r@gmail.com 
-password: rrr
+<a href="https://resplendent-tartufo-99517e.netlify.app/login">Demo</a> 
+<p>user: r@gmail.com </p>
+<p>password: rrr</p>
